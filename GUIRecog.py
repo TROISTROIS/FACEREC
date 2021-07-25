@@ -69,7 +69,7 @@ def detect_face():
                         mycursor.execute(sql, val)
                         mydb.commit()
                     else:
-                        print("USER IS SAVED ALREAD...")
+                        print("USER IS SAVED ALREADY...")
                         print(mycursor.fetchone())
 
                 else:
