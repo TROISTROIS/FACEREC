@@ -6,6 +6,7 @@ mydb=mysql.connector.connect(
     database="REGISTEREDSTUDENTS"
 
 )
+
 # create a table called STUDENTDETAILS
 mycursor=mydb.cursor()
 mycursor.execute("CREATE TABLE STUDENTDETAILS(USERID varchar(50),STUDENTNAME varchar (50),REGISTRATIONNUMBER varchar(50) primary key,COURSENAME varchar(50),UNITCODE varchar(50))")
