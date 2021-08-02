@@ -12,16 +12,17 @@ from PIL import Image
 
 from datetime import datetime
 #create the main window and give it a name
-window = tk.Tk()
-window.title("FACE RECOGNITION SYSTEM")
+root = tk.Tk()
+root.title("FACE RECOGNITION SYSTEM")
 
-head = tk.Label(window, text="Click the button below to mark your attendance using face recognition!!!",bg='#afeeee',font=('times', 17, ' bold ') )
+head = tk.Label(root, text="Click the button below to mark your attendance using face recognition!!!",bg='#afeeee',font=('times', 17, ' bold ') )
 head.place(x=40,y=0)
 
+
 # Label and text field
-l1 = tk.Label(window, text="LESSON ID", font=("Arial", 15), bg='#afeeee')
+l1 = tk.Label(root, text="LESSON ID", font=("Arial", 15), bg='#afeeee')
 l1.place(x=0, y=60)
-t1 = tk.Entry(window, bd=3, width=40, bg='#40e0d0')
+t1 = tk.Entry(root, bd=3, width=40, bg='#40e0d0')
 t1.place(x=300, y=60, height=40)
 
 # Button and action performed when the button(FACE DETECTION) is clicked. It generates a detects a face.
@@ -88,15 +89,15 @@ def detect_face():
     cv2.destroyAllWindows()
 
 
-b1 = tk.Button(window, text="FACE RECOGNITION", font=("Arial", 15), bg='#afeeee', command=detect_face)
+b1 = tk.Button(root, text="FACE RECOGNITION", font=("Arial", 15), bg='#afeeee', command=detect_face)
 b1.place(x=300, y=150, width=230)
 
-head1 = tk.Label(window, text="Click the button below to register if you are a new student!!!",bg='#afeeee',font=('times', 17, ' bold ') )
+head1 = tk.Label(root, text="Click the button below to register if you are a new student!!!",bg='#afeeee',font=('times', 17, ' bold ') )
 head1.place(x=50,y=250)
 
 def new_student():
     # create the main window and give it a name
-    window = tk.Tk()
+    window = tk.Toplevel(root)
     window.title("STUDENT DETAILS")
 
     head = tk.Label(window, text="For New Registrations, fill in your details below !!!", bg='#afeeee',
@@ -224,6 +225,7 @@ def new_student():
         recognizer.save('trainner/trainner.yml')
         # call the method
         train_classifier("dataSet")
+        messagebox.showinfo('Result', 'Your data has been trainned successfully!!!')
 
 
     b2 = tk.Button(window, text="TRAIN YOUR DATA", font=("Arial", 15), bg='#afeeee', command=training)
@@ -239,12 +241,13 @@ def new_student():
     window['background'] = '#dda0dd'
     window.mainloop()
 
-b4 = tk.Button(window, text="NEW STUDENT", font=("Arial", 15), bg='#afeeee', command=new_student)
+
+b4 = tk.Button(root, text="NEW STUDENT", font=("Arial", 15), bg='#afeeee', command=new_student)
 b4.place(x=300, y=330, width=230)
 
 
 # set window size
-window.geometry("800x400")
+root.geometry("800x400")
 # set window color
-window['background'] = '#dda0dd'
-window.mainloop()
+root['background'] = '#dda0dd'
+root.mainloop()
