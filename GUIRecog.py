@@ -59,7 +59,7 @@ def detect_face():
                 # convert the name from tuple into string
                 Name = '' + ''.join(Name)
 
-                if conf < 71:
+                if conf > 81:
                     # write the extracted name
                     cv2.putText(img, Name, (x, y - 40), font, 0.7, (18, 8, 133), 2)
 
@@ -171,12 +171,12 @@ def new_student():
                     # live frame from camera to show up
                     cv2.imshow('frame', img)
 
-                # wait for 100 milliseconds to capture 20 images or quit the operation using "q"
-                if cv2.waitKey(1) == 13 or int(sampleNum) == 30:
+                # wait for 100 milliseconds to capture 100 images or quit the operation using "q"
+                if cv2.waitKey(1) == 13 or int(sampleNum) == 100:
                     break
-                # break if the sample number is more than 20
-                elif sampleNum > 20:
-                    break
+                # break if the sample number is more than 100
+                #elif sampleNum > 100:
+                    #break
 
             cam.release()
             cv2.destroyAllWindows()
