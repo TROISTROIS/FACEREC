@@ -9,7 +9,7 @@ import cv2
 import csv
 import numpy as np
 from PIL import Image
-import datetime
+from datetime import datetime
 import time
 
 #Functions===========================================================
@@ -66,9 +66,9 @@ frame1 = tkinter.Frame(window, bg="white")
 frame1.place(relx=0.11, rely=0.15, relwidth=0.39, relheight=4)
 
 frame2 = tkinter.Frame(window, bg="white")
-frame2.place(relx=0.51, rely=0.15, relwidth=0.39, relheight=0.80)
+frame2.place(relx=0.55, rely=0.15, relwidth=0.39, relheight=0.80)
 
-#frame_headder
+#frame_header
 fr_head1 = tkinter.Label(frame1, text="Register New Student", fg="white",bg="black" ,font=('times', 17, ' bold ') )
 fr_head1.place(x=0,y=0,relwidth=1)
 
@@ -114,7 +114,7 @@ clearButton.place(x=55, y=390,relwidth=0.29)
 
 
 def generate_dataset():
-    # if all the fields are not filled correctly, display the message or else generate a datset,.
+    # if all the fields are not filled correctly, display the message or else generate a dataset,.
     if (txt.get() == "" or txt2.get() == "" or txt3.get() == "" or txt4.get() == ""):
         messagebox.showinfo('Result', 'Please fill in all the details')
     else:
@@ -245,21 +245,28 @@ def detect_face():
                 Name = mycursor.fetchone()
                 # convert the name from tuple into string
                 Name = '' + ''.join(Name)
+                mycursor.execute("SELECT UNITCODE FROM STUDENTDETAILS WHERE USERID=" + str(USERID))
+                unit = mycursor.fetchone()
+                # convert the name from tuple into string
+                unit = '' + ''.join(unit)
 
-                if (conf<51):
+
+                if (conf>71):
                     # write the extracted name
                     cv2.putText(img, Name, (x, y - 40), font, 0.7, (18, 8, 133), 2)
 
                     mycursor.execute("SELECT * FROM studentdetails WHERE STUDENTNAME = '%s'" % Name)
                     reg = mycursor.fetchone()[2]
+
+
                     print(f"REG NUMBER OF {Name} is {reg}")
 
-                    mycursor.execute("SELECT * FROM attendance WHERE REGNUMBER='%s' AND LESSON_ID='%s'" % (reg,txt.get()))
+                    mycursor.execute("SELECT * FROM attendance WHERE REGNUMBER='%s' AND UNITCODE='%s'" % (reg,unit))
                     x = mycursor.fetchall()
                     if not x:
-                        sql = "INSERT INTO attendance(LESSON_ID, DATE,REGNUMBER ) values(%s,%s,%s)"
+                        sql = "INSERT INTO attendance(UNITCODE,STUDENT_NAME,REGNUMBER,DATE,TIME) values(%s,%s,%s,%s,%s)"
                         # values is extracted from input
-                        val = (txt.get(), str(datetime.now().date()), reg)
+                        val = (unit,Name,reg,str(datetime.now().date()),str(datetime.now().time()))
                         mycursor.execute(sql, val)
                         mydb.commit()
                     else:
@@ -288,21 +295,23 @@ style = ttk.Style()
 style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11)) # Modify the font of the body
 style.configure("mystyle.Treeview.Heading",font=('times', 13,'bold')) # Modify the font of the headings
 style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-tb= ttk.Treeview(frame2,height =13,columns = ('name','date','time'),style="mystyle.Treeview")
-tb.column('#0',width=82)
-tb.column('name',width=130)
-tb.column('date',width=133)
-tb.column('time',width=133)
-tb.grid(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=4)
-tb.heading('#0',text ='ID')
-tb.heading('name',text ='NAME')
+tb= ttk.Treeview(frame2,height =13,columns = ('name','regno','date','time'),style="mystyle.Treeview")
+tb.column('#0',width=100)
+tb.column('name',width=140)
+tb.column('regno',width=90)
+tb.column('date',width=60)
+tb.column('time',width=80)
+tb.grid(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=5)
+tb.heading('#0',text ='UNIT CODE')
+tb.heading('name',text =' STUDENT NAME')
+tb.heading('regno',text ='REG NO')
 tb.heading('date',text ='DATE')
-tb.heading('time',text ='TIME')
+tb.heading('time',text='TIME')
 
 #SCROLLBAR--------------------------------------------------
 
 scroll=ttk.Scrollbar(frame2,orient='vertical',command=tb.yview)
-scroll.grid(row=2,column=4,padx=(0,100),pady=(150,0),sticky='ns')
+scroll.grid(row=2,column=5,padx=(0,100),pady=(150,0),sticky='ns')
 tb.configure(yscrollcommand=scroll.set)
 
 #closing lines------------------------------------------------
