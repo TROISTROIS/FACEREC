@@ -249,20 +249,16 @@ def detect_face():
                 unit = mycursor.fetchone()
                 # convert the name from tuple into string
                 unit = '' + ''.join(unit)
+                mycursor.execute("SELECT * FROM studentdetails WHERE STUDENTNAME = '%s'" % Name)
+                reg = mycursor.fetchone()[2]
 
 
                 if (conf>71):
                     # write the extracted name
                     cv2.putText(img, Name, (x, y - 40), font, 0.7, (18, 8, 133), 2)
-
-                    mycursor.execute("SELECT * FROM studentdetails WHERE STUDENTNAME = '%s'" % Name)
-                    reg = mycursor.fetchone()[2]
+                    fetch()
 
 
-                    print(f"REG NUMBER OF {Name} is {reg}")
-
-                    mycursor.execute("SELECT * FROM attendance WHERE REGNUMBER='%s' AND UNITCODE='%s'" % (reg,unit))
-                    x = mycursor.fetchall()
                     if not x:
                         sql = "INSERT INTO attendance(UNITCODE,STUDENT_NAME,REGNUMBER,DATE,TIME) values(%s,%s,%s,%s,%s)"
                         # values is extracted from input
@@ -270,7 +266,7 @@ def detect_face():
                         mycursor.execute(sql, val)
                         mydb.commit()
                     else:
-                        print("USER IS SAVED ALREADY...")
+
                         print(mycursor.fetchone())
 
                 else:
@@ -283,7 +279,45 @@ def detect_face():
 cv2.destroyAllWindows()
 
 trackImg = tkinter.Button(frame2, text="Take Attendance", command=detect_face, fg="black", bg="#00aeff", height=1, activebackground = "white" ,font=('times', 16, ' bold '))
-trackImg.place(x=30,y=60,relwidth=0.89)
+trackImg.place(x=30,y=30,relwidth=0.89)
+
+def fetch():
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="",
+        database="REGISTEREDSTUDENTS"
+    )
+
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM attendance")
+    x = mycursor.fetchall()
+    print(x)
+
+def att():
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="",
+        database="REGISTEREDSTUDENTS"
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM attendance")
+
+    # To convert the data in the database into strings on the given object, use csv.writer() method.
+
+    with open('attendance.csv', 'w', newline='\n') as f:
+        writer = csv.writer(f)
+
+        for row in mycursor.fetchall():
+            writer.writerow(row)
+
+
+att()
+
+trackImg = tkinter.Button(frame2, text="View Attendance", command=lambda:tree.insert(END,fetch()), fg="black", bg="#00aeff", height=1, activebackground = "white" ,font=('times', 16, ' bold '))
+trackImg.place(x=30,y=90,relwidth=0.89)
+
 
 quitWindow = tkinter.Button(frame2, text="Quit", command=window.destroy, fg="white", bg="#13059c", width=35, height=1, activebackground = "white", font=('times', 16, ' bold '))
 quitWindow.place(x=30, y=450,relwidth=0.89)
@@ -295,24 +329,25 @@ style = ttk.Style()
 style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11)) # Modify the font of the body
 style.configure("mystyle.Treeview.Heading",font=('times', 13,'bold')) # Modify the font of the headings
 style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-tb= ttk.Treeview(frame2,height =13,columns = ('name','regno','date','time'),style="mystyle.Treeview")
-tb.column('#0',width=100)
-tb.column('name',width=140)
-tb.column('regno',width=90)
-tb.column('date',width=60)
-tb.column('time',width=80)
-tb.grid(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=5)
-tb.heading('#0',text ='UNIT CODE')
-tb.heading('name',text =' STUDENT NAME')
-tb.heading('regno',text ='REG NO')
-tb.heading('date',text ='DATE')
-tb.heading('time',text='TIME')
+tree= ttk.Treeview(frame2,height =13,columns = ('name','regno','date','time'),style="mystyle.Treeview")
+tree.column('#0',width=100)
+tree.column('name',width=140)
+tree.column('regno',width=90)
+tree.column('date',width=60)
+tree.column('time',width=80)
+tree.grid(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=5)
+tree.heading('#0',text ='UNIT CODE')
+tree.heading('name',text =' STUDENT NAME')
+tree.heading('regno',text ='REG NO')
+tree.heading('date',text ='DATE')
+tree.heading('time',text='TIME')
+
 
 #SCROLLBAR--------------------------------------------------
 
-scroll=ttk.Scrollbar(frame2,orient='vertical',command=tb.yview)
+scroll=ttk.Scrollbar(frame2,orient='vertical',command=tree.yview)
 scroll.grid(row=2,column=5,padx=(0,100),pady=(150,0),sticky='ns')
-tb.configure(yscrollcommand=scroll.set)
+tree.configure(yscrollcommand=scroll.set)
 
 #closing lines------------------------------------------------
 window.protocol("WM_DELETE_WINDOW", on_closing)

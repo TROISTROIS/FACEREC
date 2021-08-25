@@ -65,7 +65,7 @@ def detect_face():
 
                     mycursor.execute("SELECT * FROM studentdetails WHERE STUDENTNAME = '%s'" % Name)
                     reg = mycursor.fetchone()[2]
-                    print(f"REG NUMBER OF {Name} is {reg}")
+                    print("REG NUMBER OF {Name} is {reg}")
 
                     mycursor.execute("SELECT * FROM attendance WHERE REGNUMBER='%s' AND LESSON_ID='%s'" % (reg,t1.get()))
                     x = mycursor.fetchall()

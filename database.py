@@ -7,13 +7,13 @@ mydb=mysql.connector.connect(
 
 )
 
-# create a table called STUDENTDETAILS
-#mycursor=mydb.cursor()
-#mycursor.execute("CREATE TABLE STUDENTDETAILS(USERID varchar(50),STUDENTNAME varchar (50),REGISTRATIONNUMBER varchar(50) primary key,COURSENAME varchar(50),UNITCODE varchar(50))")
+#create a table called STUDENTDETAILS
+mycursor=mydb.cursor()
+mycursor.execute("CREATE TABLE STUDENTDETAILS(USERID varchar(50),STUDENTNAME varchar (50),REGISTRATIONNUMBER varchar(50) primary key,COURSENAME varchar(50),UNITCODE varchar(50))")
 
 # create a table called LECTURERDETAILS
-#mycursor=mydb.cursor()
-#mycursor.execute("CREATE TABLE LECTURERDETAILS(LECTURERNAME varchar(50),LECTURERID varchar(50) primary key, UNITCODE varchar(50))")
+mycursor=mydb.cursor()
+mycursor.execute("CREATE TABLE LECTURERDETAILS(LECTURERNAME varchar(50),LECTURERID varchar(50) primary key, UNITCODE varchar(50))")
 
 # create a table called attendance
 mycursor=mydb.cursor()
