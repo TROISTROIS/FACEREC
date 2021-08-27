@@ -100,11 +100,12 @@ lbl4.place(x=0, y=310)
 txt4 = tkinter.Entry(frame1,width=32 ,fg="black",bg="#e1f2f2",highlightcolor="#00aeff",highlightthickness=3,font=('times', 15, ' bold ')  )
 txt4.place(x=55, y=340,relwidth=0.75)
 
+
+
+
+
 message = tkinter.Label(frame1, text="" ,bg="white" ,fg="black"  ,width=39,height=1, activebackground = "yellow" ,font=('times', 16, ' bold '))
 message.place(x=0, y=590)
-#Attendance frame
-lbl5 = tkinter.Label(frame2, text="Attendance Table",width=20  ,fg="black"  ,bg="white"  ,height=1 ,font=('times', 17, ' bold '))
-lbl5.place(x=100, y=115)
 
 
 #BUTTONS----------------------------------------------
@@ -256,9 +257,9 @@ def detect_face():
                 if (conf>71):
                     # write the extracted name
                     cv2.putText(img, Name, (x, y - 40), font, 0.7, (18, 8, 133), 2)
-                    fetch()
-
-
+                    mycursor.execute("SELECT * FROM attendance")
+                    x = mycursor.fetchall()
+                    #print(x)
                     if not x:
                         sql = "INSERT INTO attendance(UNITCODE,STUDENT_NAME,REGNUMBER,DATE,TIME) values(%s,%s,%s,%s,%s)"
                         # values is extracted from input
@@ -279,9 +280,9 @@ def detect_face():
 cv2.destroyAllWindows()
 
 trackImg = tkinter.Button(frame2, text="Take Attendance", command=detect_face, fg="black", bg="#00aeff", height=1, activebackground = "white" ,font=('times', 16, ' bold '))
-trackImg.place(x=30,y=30,relwidth=0.89)
+trackImg.place(x=30,y=60,relwidth=0.89)
 
-def fetch():
+def fetchstud():
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -291,8 +292,17 @@ def fetch():
 
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM attendance")
-    x = mycursor.fetchall()
-    print(x)
+    x=mycursor.fetchall()
+    i= 0
+    for attendance in x:
+        for j in range(len(attendance)):
+            e = Text(frame2,width=32, height=10, bg="#e1f2f2",highlightcolor="#00aeff",highlightthickness=3,font=('times', 15, ' bold ') )
+            e.grid(row=i, column=j)
+            e.place(x=30, y=180,relwidth=0.90)
+            e.insert(END,attendance[j])
+        i=i+1
+
+fetchstud()
 
 def att():
     mydb = mysql.connector.connect(
@@ -311,43 +321,17 @@ def att():
 
         for row in mycursor.fetchall():
             writer.writerow(row)
-
-
 att()
 
-trackImg = tkinter.Button(frame2, text="View Attendance", command=lambda:tree.insert(END,fetch()), fg="black", bg="#00aeff", height=1, activebackground = "white" ,font=('times', 16, ' bold '))
-trackImg.place(x=30,y=90,relwidth=0.89)
-
+#Viewatt = tkinter.Button(frame2, text="View Attendance", command=lambda: .insert(END,fetchstud), fg="black", bg="#00aeff",width=35, height=1,activebackground = "white",font=('times', 16, ' bold '))
+#Viewatt.place(x=30,y=120,relwidth=0.89)
 
 quitWindow = tkinter.Button(frame2, text="Quit", command=window.destroy, fg="white", bg="#13059c", width=35, height=1, activebackground = "white", font=('times', 16, ' bold '))
 quitWindow.place(x=30, y=450,relwidth=0.89)
 
 
 
-#Attandance table----------------------------
-style = ttk.Style()
-style.configure("mystyle.Treeview", highlightthickness=0, bd=0, font=('Calibri', 11)) # Modify the font of the body
-style.configure("mystyle.Treeview.Heading",font=('times', 13,'bold')) # Modify the font of the headings
-style.layout("mystyle.Treeview", [('mystyle.Treeview.treearea', {'sticky': 'nswe'})]) # Remove the borders
-tree= ttk.Treeview(frame2,height =13,columns = ('name','regno','date','time'),style="mystyle.Treeview")
-tree.column('#0',width=100)
-tree.column('name',width=140)
-tree.column('regno',width=90)
-tree.column('date',width=60)
-tree.column('time',width=80)
-tree.grid(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=5)
-tree.heading('#0',text ='UNIT CODE')
-tree.heading('name',text =' STUDENT NAME')
-tree.heading('regno',text ='REG NO')
-tree.heading('date',text ='DATE')
-tree.heading('time',text='TIME')
 
-
-#SCROLLBAR--------------------------------------------------
-
-scroll=ttk.Scrollbar(frame2,orient='vertical',command=tree.yview)
-scroll.grid(row=2,column=5,padx=(0,100),pady=(150,0),sticky='ns')
-tree.configure(yscrollcommand=scroll.set)
 
 #closing lines------------------------------------------------
 window.protocol("WM_DELETE_WINDOW", on_closing)
