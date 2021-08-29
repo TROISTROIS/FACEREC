@@ -8,7 +8,7 @@ import mysql.connector
 import cv2
 import csv
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageTk
 from datetime import datetime
 import time
 
@@ -41,7 +41,16 @@ window = tkinter.Tk()
 window.title("Face Recognition Based Attendance System")
 window.geometry("1280x720")
 window.resizable(True,True)
-window.configure(background='#355454')
+#window.configure(background='#355454')
+
+bg = ImageTk.PhotoImage(file="page22.png")
+# create canvas
+canvas = Canvas(width=1280, height=720)
+canvas.pack()
+# place the image inside canvas
+canvas.create_image(0, 0, image=bg, anchor='nw')
+
+
 
 #Help menubar----------------------------------------------
 menubar=Menu(window)
@@ -99,10 +108,6 @@ lbl4.place(x=0, y=310)
 
 txt4 = tkinter.Entry(frame1,width=32 ,fg="black",bg="#e1f2f2",highlightcolor="#00aeff",highlightthickness=3,font=('times', 15, ' bold ')  )
 txt4.place(x=55, y=340,relwidth=0.75)
-
-
-
-
 
 message = tkinter.Label(frame1, text="" ,bg="white" ,fg="black"  ,width=39,height=1, activebackground = "yellow" ,font=('times', 16, ' bold '))
 message.place(x=0, y=590)
@@ -257,9 +262,40 @@ def detect_face():
                 if (conf>71):
                     # write the extracted name
                     cv2.putText(img, Name, (x, y - 40), font, 0.7, (18, 8, 133), 2)
-                    mycursor.execute("SELECT * FROM attendance")
+                    mycursor.execute("SELECT * FROM attendance WHERE REGNUMBER='%s' AND UNITCODE='%s' AND STUDENT_NAME='%s'" % (reg,unit,Name))
                     x = mycursor.fetchall()
-                    #print(x)
+                    #print attendance list using a table
+                    style = ttk.Style()
+                    style.configure("mystyle.Treeview", highlightthickness=0, bd=0,font=('Calibri', 11))
+                    # Modify the font of the body
+                    style.configure("mystyle.Treeview.Heading",font=('times', 13, 'bold'))
+                    # Modify the font of the headings
+                    style.layout("mystyle.Treeview",[('mystyle.Treeview.treearea', {'sticky': 'nswe'})])
+                    # Remove the borders and choose frame
+
+                    tb = ttk.Treeview(frame2,selectmode='browse',style="mystyle.Treeview")
+                    #choose position for the table
+                    tb.grid(row=1, column=1, padx=(30,0), pady=(150,0))
+                    tb["columns"]=("1","2","3","4","5")
+                    tb['show']='headings'
+                    #table columns
+                    tb.column("1", width=100)
+                    tb.column("2", width=80)
+                    tb.column("3", width=80)
+                    tb.column("4", width=80)
+                    tb.column("5", width=80)
+                    #table headings
+                    tb.heading("1", text='UNITCODE')
+                    tb.heading("2", text='NAME')
+                    tb.heading("3", text='REGNO')
+                    tb.heading("4", text='DATE')
+                    tb.heading("5", text='TIME')
+                    #print values from the database in GUI
+                    for att in x:
+                        tb.insert("",'end',iid=att[0],values=(att[0],att[1],att[2],att[3],att[4]))
+                        #print(attendance)
+
+
                     if not x:
                         sql = "INSERT INTO attendance(UNITCODE,STUDENT_NAME,REGNUMBER,DATE,TIME) values(%s,%s,%s,%s,%s)"
                         # values is extracted from input
@@ -281,28 +317,6 @@ cv2.destroyAllWindows()
 
 trackImg = tkinter.Button(frame2, text="Take Attendance", command=detect_face, fg="black", bg="#00aeff", height=1, activebackground = "white" ,font=('times', 16, ' bold '))
 trackImg.place(x=30,y=60,relwidth=0.89)
-
-def fetchstud():
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="",
-        database="REGISTEREDSTUDENTS"
-    )
-
-    mycursor = mydb.cursor()
-    mycursor.execute("SELECT * FROM attendance")
-    x=mycursor.fetchall()
-    i= 0
-    for attendance in x:
-        for j in range(len(attendance)):
-            e = Text(frame2,width=32, height=10, bg="#e1f2f2",highlightcolor="#00aeff",highlightthickness=3,font=('times', 15, ' bold ') )
-            e.grid(row=i, column=j)
-            e.place(x=30, y=180,relwidth=0.90)
-            e.insert(END,attendance[j])
-        i=i+1
-
-fetchstud()
 
 def att():
     mydb = mysql.connector.connect(
