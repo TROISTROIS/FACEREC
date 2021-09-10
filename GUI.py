@@ -2,17 +2,15 @@ import tkinter
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-import tkinter.simpledialog as tsd
 import os
 import mysql.connector
 import cv2
 import csv
 import numpy as np
-from PIL import Image, ImageTk
+from PIL import Image
 from datetime import datetime
-import time
 
-#Functions===========================================================
+#Functions
 
 #AskforQUIT
 def on_closing():
@@ -41,15 +39,7 @@ window = tkinter.Tk()
 window.title("Face Recognition Based Attendance System")
 window.geometry("1280x720")
 window.resizable(True,True)
-#window.configure(background='#355454')
-
-bg = ImageTk.PhotoImage(file="page22.png")
-# create canvas
-canvas = Canvas(width=1280, height=720)
-canvas.pack()
-# place the image inside canvas
-canvas.create_image(0, 0, image=bg, anchor='nw')
-
+window.configure(background='#355454')
 
 
 #Help menubar----------------------------------------------
@@ -290,11 +280,10 @@ def detect_face():
                     tb.heading("3", text='REGNO')
                     tb.heading("4", text='DATE')
                     tb.heading("5", text='TIME')
+
                     #print values from the database in GUI
                     for att in x:
                         tb.insert("",'end',iid=att[0],values=(att[0],att[1],att[2],att[3],att[4]))
-                        #print(attendance)
-
 
                     if not x:
                         sql = "INSERT INTO attendance(UNITCODE,STUDENT_NAME,REGNUMBER,DATE,TIME) values(%s,%s,%s,%s,%s)"
