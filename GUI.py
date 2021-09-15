@@ -18,11 +18,11 @@ def on_closing():
         window.destroy()
 #contact
 def contact():
-    messagebox._show(title="Contact Me",message="If you find anything weird or you need any help contact me on 'meetsuvariya@gmail.com'")
+    messagebox._show(title="Contact Me",message="If you have any questions contact me on 'siennefr@gmail.com'")
 
 #about
 def about():
-    messagebox._show(title="About",message="This Attendance System is designed by Meet Suvariya")
+    messagebox._show(title="About",message="This Attendance System is used to mark student attendance. A new student is required to register their details while a student who is already registered only needs to take the attendance. The Attendance will be marked and recorded in a csv file for the lecturer to see. ")
 
 #clearbutton
 def clear():
@@ -36,7 +36,7 @@ def clear():
 
 
 window = tkinter.Tk()
-window.title("Face Recognition Based Attendance System")
+window.title("Face Recognition For Class Attendance")
 window.geometry("1280x720")
 window.resizable(True,True)
 window.configure(background='#355454')
@@ -57,7 +57,7 @@ menubar.add_command(label="About",command=about)
 window.config(menu=menubar)
 
 #main window------------------------------------------------
-message3 = tkinter.Label(window, text="Face Recognition Based Attendance System" ,fg="white",bg="#355454" ,width=60 ,height=1,font=('times', 29, ' bold '))
+message3 = tkinter.Label(window, text="Face Recognition For Class Attendance",fg="white",bg="#355454",width=60 ,height=1,font=('times', 29, ' bold '))
 message3.place(x=10, y=10,relwidth=1)
 
 #frames-------------------------------------------------
@@ -282,6 +282,7 @@ def detect_face():
                     tb.heading("5", text='TIME')
 
                     #print values from the database in GUI
+                    print(len(x))
                     for att in x:
                         tb.insert("",'end',iid=att[0],values=(att[0],att[1],att[2],att[3],att[4]))
 
@@ -324,7 +325,7 @@ def att():
 
         for row in mycursor.fetchall():
             writer.writerow(row)
-att()
+    att()
 
 #Viewatt = tkinter.Button(frame2, text="View Attendance", command=lambda: .insert(END,fetchstud), fg="black", bg="#00aeff",width=35, height=1,activebackground = "white",font=('times', 16, ' bold '))
 #Viewatt.place(x=30,y=120,relwidth=0.89)

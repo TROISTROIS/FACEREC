@@ -8,7 +8,7 @@ from PIL import Image
 
 #create a recognizer
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-detector= cv2.CascadeClassifier("haarcascade_frontalface_default.xml");
+detector= cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 # to get all images at all levels create a method
 def train_classifier(path):
@@ -21,7 +21,7 @@ def train_classifier(path):
     #Loop through all the image paths and loading the Ids and the images
     for imagePath in imagePaths:
         #open the image and converting it to gray scale
-        pilImage=Image.open(imagePath).convert('L');
+        pilImage=Image.open(imagePath).convert('L')
         #Convert the PIL image into numpy array, OpenCV works with numpy arrays
         imageNp=np.array(pilImage,'uint8')
         #get the Id from the image by splitting the path using the last element , again with the dot split to get the ith index then convert into integer
