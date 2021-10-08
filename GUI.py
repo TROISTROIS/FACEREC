@@ -10,8 +10,6 @@ import numpy as np
 from PIL import Image
 from datetime import datetime
 
-#Functions
-
 #AskforQUIT
 def on_closing():
     if messagebox.askyesno("Quit", "You are exiting window.Do you want to quit?"):
@@ -33,14 +31,11 @@ def clear():
     res = "1)Take Images  ===> 2)Save Profile"
     message.configure(text=res)
 
-
-
 window = tkinter.Tk()
 window.title("Face Recognition For Class Attendance")
 window.geometry("1280x720")
 window.resizable(True,True)
 window.configure(background='#355454')
-
 
 #Help menubar----------------------------------------------
 menubar=Menu(window)
@@ -137,7 +132,6 @@ def generate_dataset():
         detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
         sampleNum = 0
-
         while True:
             # capture image
             ret, img = cam.read()
@@ -293,9 +287,7 @@ def detect_face():
                         mycursor.execute(sql, val)
                         mydb.commit()
                     else:
-
                         print(mycursor.fetchone())
-
                 else:
                     # if it does not identify a user it prits "UNKNOWN"
                     cv2.putText(img, "UNKNOWN", (x, y - 40), font, 0.7, (18, 8, 133), 2)
@@ -332,10 +324,6 @@ def att():
 
 quitWindow = tkinter.Button(frame2, text="Quit", command=window.destroy, fg="white", bg="#13059c", width=35, height=1, activebackground = "white", font=('times', 16, ' bold '))
 quitWindow.place(x=30, y=450,relwidth=0.89)
-
-
-
-
 
 #closing lines------------------------------------------------
 window.protocol("WM_DELETE_WINDOW", on_closing)
