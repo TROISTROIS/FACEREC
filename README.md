@@ -1,2 +1,2 @@
 # FACEREC
-This is a face recognition class attenfance project using Python and OpenCV hhjhjhhhh
+This is a computer vision problem to make class attendance of students implemented using Python and OpenCV. 
